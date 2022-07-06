@@ -19,7 +19,29 @@
       </router-link>
     </p>
   </div>
-  <form class="mt-8 space-y-6" action="#" method="POST">
+  <form class="mt-8 space-y-6" @submit="login">
+    <Alert v-if="errorMsg">
+      {{ errorMsg }}
+      <span
+        @click="errorMsg = ''"
+        class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-[rgba(0,0,0,0.2)]"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </span>
+    </Alert>
     <input type="hidden" name="remember" value="true" />
     <div class="-space-y-px rounded-md shadow-sm">
       <div>
@@ -32,6 +54,7 @@
           required=""
           class="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
           placeholder="Email address"
+          v-model="user.email"
         />
       </div>
       <div>
@@ -44,6 +67,7 @@
           required=""
           class="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
           placeholder="Password"
+          v-model="user.password"
         />
       </div>
     </div>
@@ -81,6 +105,36 @@
 
 <script setup>
 import { LockClosedIcon } from '@heroicons/vue/solid'
+import Alert from '@/components/basic/Alert.vue'
+
+import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+import { useAuthStore } from '@/stores/auth.js'
+
+const user = reactive({
+  email: '',
+  password: ''
+})
+
+const router = useRouter()
+const auth = useAuthStore()
+
+const errorMsg = ref('')
+
+const login = async (event) => {
+  event.preventDefault()
+
+  const error = await auth.login(user)
+
+  if (error) {
+    errorMsg.value = error.message
+  } else {
+    await router.push({
+      name: 'Dashboard'
+    })
+  }
+}
 </script>
 
 <style></style>

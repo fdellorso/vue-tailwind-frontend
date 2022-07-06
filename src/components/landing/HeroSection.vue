@@ -32,7 +32,7 @@
                       src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
                     />
                   </a>
-                  <div class="-mr-2 flex items-center md:hidden">
+                  <div class="-mr-1 flex items-center md:hidden">
                     <PopoverButton
                       class="inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
                     >

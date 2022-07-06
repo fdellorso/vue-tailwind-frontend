@@ -33,10 +33,10 @@
                 v-for="item in navigation"
                 :key="item.name"
                 :to="item.to"
-                active-class="bg-gray-900 text-white"
+                active-class=""
                 :class="[
                   this.$route.name === item.to.name
-                    ? ''
+                    ? 'bg-gray-900 text-white'
                     : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                   'rounded-md px-3 py-2 text-sm font-medium'
                 ]"
@@ -79,7 +79,7 @@
               leave-to-class="transform opacity-0 scale-95"
             >
               <MenuItems
-                class="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
               >
                 <MenuItem
                   v-for="item in userNavigation"
@@ -103,21 +103,22 @@
     </div>
 
     <DisclosurePanel class="sm:hidden">
-      <div class="space-y-1 px-2 pt-2 pb-3">
-        <DisclosureButton
-          v-for="item in navigation"
-          :key="item.name"
-          as="a"
-          :href="item.href"
-          :class="[
-            item.current
-              ? 'bg-gray-900 text-white'
-              : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-            'block rounded-md px-3 py-2 text-base font-medium'
-          ]"
-          :aria-current="item.current ? 'page' : undefined"
-          >{{ item.name }}</DisclosureButton
-        >
+      <div class="flex flex-col space-y-1 px-2 pt-2 pb-3">
+        <DisclosureButton>
+          <router-link
+            v-for="item in navigation"
+            :key="item.name"
+            :to="item.to"
+            active-class=""
+            :class="[
+              this.$route.name === item.to.name
+                ? 'bg-gray-900 text-white'
+                : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+              'my-2 block rounded-md px-3 py-2 text-left text-base font-medium'
+            ]"
+            >{{ item.name }}</router-link
+          >
+        </DisclosureButton>
       </div>
     </DisclosurePanel>
   </Disclosure>
@@ -134,26 +135,22 @@ import {
   MenuItems
 } from '@headlessui/vue'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
-import { useStore } from 'vuex'
-import { computed } from 'vue'
-import { useRouter } from 'vue-router'
-import router from '../../router'
 
-const store = useStore()
-const user = computed(() => store.state.user.data)
+import { useAuthStore } from '@/stores/auth.js'
 
-const logout = () => {
-  store.commit('logout')
-  router.push({
-    name: 'Login'
-  })
+const auth = useAuthStore()
+const logout = async () => {
+  await auth.logout()
 }
 
 const log = (name) => {
   console.log(name)
 }
 
-const navigation = [{ name: 'Dashboard', to: { name: 'Dashboard' } }]
+const navigation = [
+  { name: 'Dashboard', to: { name: 'Dashboard' } },
+  { name: 'Gallery', to: { name: 'Gallery' } }
+]
 
 const userNavigation = [
   { name: 'Your Profile', click: log },

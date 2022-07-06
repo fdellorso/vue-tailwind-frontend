@@ -1,64 +1,68 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Landing from '../views/Landing.vue'
-import Dashboard from '../views/Dashboard.vue'
-// import Login from '../views/Login.vue'
-// import Register from '../views/Register.vue'
-import DefaultLayout from '../components/DefaultLayout.vue'
-// import AuthLayout from '../components/AuthLayout.vue'
-import Login from '../components/complex/Login.vue'
-import Registration from '../components/complex/Registration.vue'
-import store from '../store'
+import authMiddleware from './middleware/auth-middleware'
+
+import DashboardLayout from '@/components/DashboardLayout.vue'
+import AuthLayout from '@/components/AuthLayout.vue'
+
+import Landing from '@/views/Landing.vue'
+import Dashboard from '@/views/Dashboard.vue'
+import Gallery from '@/views/Gallery.vue'
+import Login from '@/views/Login.vue'
+import Register from '@/views/Register.vue'
+import VerifyEmail from '@/views/VerifyEmail.vue'
 
 const routes = [
   {
     path: '/',
-    redirect: '/landing',
-    meta: { requiresAuth: false }
-  },
-  {
-    path: '/landing',
-    name: 'Landing',
+    name: 'Home',
     component: Landing,
+    alias: '/home',
     meta: { requiresAuth: false }
   },
   {
-    path: '/control',
-    redirect: '/dashboard',
-    component: DefaultLayout,
-    meta: { requiresAuth: true },
-    children: [{ path: '/dashboard', name: 'Dashboard', component: Dashboard }]
+    path: '/auth',
+    name: 'AuthParent',
+    component: AuthLayout,
+    children: [
+      {
+        path: '/login',
+        name: 'Login',
+        component: Login,
+        meta: { isGuest: true }
+      },
+      {
+        path: '/register',
+        name: 'Register',
+        component: Register,
+        meta: { isGuest: true }
+      },
+      {
+        path: '/verify',
+        name: 'VerifyEmail',
+        component: VerifyEmail,
+        meta: { isGuest: true }
+      }
+    ]
   },
   {
-    path: '/login',
-    name: 'Login',
-    component: Login,
-    meta: { isGuest: true }
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    component: Registration,
-    meta: { isGuest: true }
+    path: '/dashboard',
+    name: 'DashboardParent',
+    component: DashboardLayout,
+    children: [
+      {
+        path: '',
+        name: 'Dashboard',
+        component: Dashboard,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/gallery',
+        name: 'Gallery',
+        component: Gallery,
+        meta: { requiresAuth: true }
+      }
+    ]
   }
-  // {
-  //   path: '/auth',
-  //   redirect: '/login',
-  //   name: 'Auth',
-  //   // component: AuthLayout,
-  //   meta: { isGuest: true },
-  //   children: [
-  //     {
-  //       path: '/login',
-  //       name: 'Login',
-  //       component: Login
-  //     },
-  //     {
-  //       path: '/register',
-  //       name: 'Register',
-  //       component: Registration
-  //     }
-  //   ]
-  // }
 ]
 
 const router = createRouter({
@@ -66,18 +70,6 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth && !store.state.user.token) {
-    next({ name: 'Login' })
-  } else if (
-    store.state.user.token &&
-    // (to.name === 'Login' || to.name === 'Register')
-    to.meta.isGuest
-  ) {
-    next({ name: 'Dashboard' })
-  } else {
-    next()
-  }
-})
+router.beforeEach(authMiddleware)
 
 export default router

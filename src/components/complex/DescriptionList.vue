@@ -135,6 +135,9 @@ const props = defineProps({
   attachements: {
     type: Array,
     required: false
+  },
+  user: {
+    type: Object
   }
 })
 </script>

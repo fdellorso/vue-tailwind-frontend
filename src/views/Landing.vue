@@ -7,9 +7,9 @@
 </template>
 
 <script setup>
-import HeroSection from '../components/landing/HeroSection.vue'
-import FeatureSection from '../components/landing/FeatureSection.vue'
-import CtaSection from '../components/landing/CtaSection.vue'
+import HeroSection from '@/components/landing/HeroSection.vue'
+import FeatureSection from '@/components/landing/FeatureSection.vue'
+import CtaSection from '@/components/landing/CtaSection.vue'
 </script>
 
 <style></style>

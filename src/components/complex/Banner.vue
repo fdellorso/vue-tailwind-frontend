@@ -1,6 +1,6 @@
 <template>
   <Transition name="fade">
-    <div class="absolute z-10 w-full bg-indigo-600" v-show="open">
+    <div class="absolute w-full bg-indigo-600" v-show="open">
       <div class="mx-auto max-w-7xl py-3 px-3 sm:px-6 lg:px-8">
         <div class="flex flex-wrap items-center justify-between">
           <div class="flex w-0 flex-1 items-center">
