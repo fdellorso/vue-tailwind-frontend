@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  frontend:
+    image: node:lts-alpine
+    container_name: frontend
+    working_dir: /frontend
+    volumes:
+      - ./:/frontend
+    ports:
+      - "3000:3000"
+    command: [ 'npm', "run", "dev" ]
+
+  npm:
+    image: node:lts-alpine
+    container_name: npm
+    working_dir: /frontend
+    volumes:
+      - ./:/frontend
+    entrypoint: [ 'npm' ]
